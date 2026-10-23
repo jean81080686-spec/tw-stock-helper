@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今日漲停股 · 台股投資小幫手</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="site-header"></header>
+
+  <main class="main main--limitup">
+    <div class="page-head">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h1 class="page-title">今日漲停股</h1>
+        <div class="page-meta">
+          <span class="tnum" id="date"></span>
+          <span>共 <strong id="total"></strong> 檔</span>
+        </div>
+      </div>
+      <span class="caption" id="updated"></span>
+    </div>
+
+    <div class="filters">
+      <div class="seg" role="group" aria-label="分類篩選" id="filters"></div>
+    </div>
+
+    <div id="list"></div>
+  </main>
+
+  <footer class="footer" id="about"></footer>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/ui.js"></script>
+<script>
+renderChrome('limitup');
+
+document.getElementById('date').textContent = AS_OF;
+document.getElementById('total').textContent = LIMIT_UPS.length;
+document.getElementById('updated').textContent = `由 Claude 每日收盤後整理 · 更新時間 ${LIMIT_UP_UPDATED}`;
+
+const options = [{ value: 'all', label: `全部 ${LIMIT_UPS.length}` },
+  ...LIMIT_UP_CATS.map(c => ({ value: c.key, label: `${c.label} ${LIMIT_UPS.filter(d => d.cat === c.key).length}` }))];
+let filter = 'all';
+
+function render() {
+  document.getElementById('filters').innerHTML = options.map(o =>
+    `<button type="button" class="seg__btn" data-value="${o.value}" aria-pressed="${o.value === filter}">${o.label}</button>`).join('');
+
+  const items = LIMIT_UPS.filter(d => filter === 'all' || d.cat === filter);
+  document.getElementById('list').innerHTML = items.length ? `<div class="grid grid--limitup">${items.map(s => {
+    const c = LIMIT_UP_CATS.find(x => x.key === s.cat);
+    return `
+      <article class="card limit-card" id="s${s.code}">
+        <div class="limit-card__head">
+          <div class="limit-card__id">
+            <div class="limit-card__title"><span class="limit-card__code">${s.code}</span><span class="limit-card__name">${esc(s.name)}</span></div>
+            <span class="badge badge--${c.tone}">${c.label}</span>
+          </div>
+          <div class="limit-card__quote">
+            <span class="limit-card__price">${f2(s.price)}</span>
+            ${changeText({ value: s.change, percent: s.pct, decimals: 2, size: 13 })}
+          </div>
+        </div>
+        <p class="limit-card__reason">${esc(s.reason)}</p>
+      </article>`;
+  }).join('')}</div>` : '<div class="card empty-card">此分類今日無漲停股</div>';
+}
+
+document.getElementById('filters').addEventListener('click', e => {
+  const b = e.target.closest('.seg__btn');
+  if (b) { filter = b.dataset.value; render(); }
+});
+render();
+</script>
+</body>
+</html>

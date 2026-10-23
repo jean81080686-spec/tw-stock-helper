@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我的持股 · 台股投資小幫手</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="site-header"></header>
+
+  <main class="main main--holdings">
+    <div class="page-head">
+      <h1 class="page-title">我的持股</h1>
+      <span class="caption" id="asof"></span>
+    </div>
+
+    <div class="grid grid--stats3" id="summary"></div>
+
+    <section class="card panel">
+      <div>
+        <h2 class="card-title">新增持股</h2>
+        <div class="panel__sub">輸入代號後自動帶入名稱與現價</div>
+      </div>
+      <form class="grid grid--form" id="add-form" novalidate>
+        <label class="field">
+          <span class="field__label">股票代號</span>
+          <span class="field__box"><span data-icon="search" data-size="16"></span><input name="code" placeholder="例：2330" autocomplete="off" inputmode="numeric"></span>
+        </label>
+        <label class="field">
+          <span class="field__label">股數</span>
+          <span class="field__box"><input name="shares" class="is-numeric" placeholder="1,000" autocomplete="off" inputmode="numeric"><span class="field__suffix">股</span></span>
+        </label>
+        <label class="field">
+          <span class="field__label">買進成本</span>
+          <span class="field__box"><input name="cost" class="is-numeric" placeholder="0.00" autocomplete="off" inputmode="decimal"><span class="field__suffix">元/股</span></span>
+        </label>
+        <button type="submit" class="btn btn--primary"><span data-icon="plus" data-size="16"></span>新增</button>
+      </form>
+      <div class="form-msg" id="msg" role="alert" hidden></div>
+    </section>
+
+    <section class="card panel panel--table">
+      <div class="panel__head">
+        <h2 class="card-title">持股列表</h2>
+        <span class="caption" id="count"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>代號</th><th>名稱</th><th class="r">股數</th><th class="r">成本</th><th class="r">現價</th>
+              <th class="r">市值</th><th class="r">損益</th><th class="r">報酬率</th><th><span hidden>操作</span></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="table-empty" id="empty" hidden>尚無持股，請由上方新增</div>
+    </section>
+  </main>
+
+  <footer class="footer" id="about"></footer>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/ui.js"></script>
+<script>
+renderChrome('holdings');
+hydrateIcons();
+document.getElementById('asof').textContent = `現價為 ${AS_OF} 收盤價`;
+
+let state = loadHoldings();
+const form = document.getElementById('add-form');
+const msg = document.getElementById('msg');
+
+function setMsg(text) { msg.textContent = text; msg.hidden = !text; }
+
+function render() {
+  const { rows, totals: t } = valueHoldings(state.list);
+  const dir = dirOf(t.pnl);
+  document.getElementById('summary').innerHTML =
+    statCard({ label: '持股總市值', iconName: 'wallet', unit: 'NT$', value: f0(t.mv), hint: `持股 ${t.count} 檔` }) +
+    statCard({ label: '總損益', iconName: 'coins', value: signed(t.pnl, f0(Math.abs(t.pnl))), dir, colorValue: true, hint: `總成本 NT$ ${f0(t.cost)}` }) +
+    statCard({ label: '總報酬率', iconName: 'trending-up', value: signed(t.ret, f2(Math.abs(t.ret)) + '%'), dir, colorValue: true, hint: '未含手續費與交易稅' });
+
+  document.getElementById('count').textContent = `共 ${t.count} 檔`;
+  document.getElementById('empty').hidden = rows.length > 0;
+  document.getElementById('rows').innerHTML = rows.map(r => `
+    <tr>
+      <td class="c-code">${r.code}</td>
+      <td class="c-name">${esc(r.name)}</td>
+      <td class="r">${f0(r.shares)}</td>
+      <td class="r c-muted">${f2(r.cost)}</td>
+      <td class="r">${f2(r.price)}</td>
+      <td class="r c-strong">${f0(r.mv)}</td>
+      <td class="r">${changeText({ value: Math.round(r.pnl) })}</td>
+      <td class="r">${changeText({ percent: r.ret, arrow: false })}</td>
+      <td class="c-action"><button type="button" class="btn btn--ghost btn--sm" data-remove="${r.id}" aria-label="移除 ${r.code} ${esc(r.name)}">${icon('x', 15)}移除</button></td>
+    </tr>`).join('');
+}
+
+function commit(next) { state = next; saveHoldings(state); render(); }
+
+form.addEventListener('input', () => setMsg(''));
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const num = v => Number(String(v).replace(/,/g, '').trim());
+  const code = form.code.value.trim(), shares = num(form.shares.value), cost = num(form.cost.value);
+  if (!QUOTES[code]) return setMsg('查無此股票代號');
+  if (!(shares > 0) || !(cost > 0)) return setMsg('股數與買進成本需大於 0');
+  commit({ list: [...state.list, { id: state.nextId, code, shares, cost }], nextId: state.nextId + 1 });
+  form.reset();
+  setMsg('');
+  form.code.focus();
+});
+
+document.getElementById('rows').addEventListener('click', e => {
+  const b = e.target.closest('[data-remove]');
+  if (b) commit({ ...state, list: state.list.filter(h => h.id !== Number(b.dataset.remove)) });
+});
+
+// Pick up changes made in another tab.
+window.addEventListener('storage', e => { if (e.key === HOLDINGS_KEY) { state = loadHoldings(); render(); } });
+render();
+</script>
+</body>
+</html>

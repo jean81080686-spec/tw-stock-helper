@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>台股投資小幫手</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="site-header"></header>
+
+  <main class="main main--home">
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">今日大盤</h2>
+        <span class="caption" id="market-asof"></span>
+      </div>
+      <div class="grid grid--index" id="market"></div>
+    </section>
+
+    <section class="section" id="holdings-summary">
+      <div class="section-head">
+        <h2 class="section-title">我的持股摘要</h2>
+        <span class="caption" id="summary-asof"></span>
+      </div>
+      <div class="grid grid--summary" id="summary"></div>
+      <div>
+        <a class="btn btn--primary" href="holdings.html">管理持股<span data-icon="chevron-right" data-size="16"></span></a>
+      </div>
+    </section>
+
+    <section class="section" id="limit-up">
+      <div class="section-head section-head--end">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <h2 class="section-title">今日漲停股</h2>
+          <span class="caption" id="limitup-updated"></span>
+        </div>
+        <a class="see-all" href="limit-up.html" id="see-all"></a>
+      </div>
+      <div class="grid grid--minis" id="limitups"></div>
+    </section>
+  </main>
+
+  <footer class="footer" id="about"></footer>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/ui.js"></script>
+<script>
+renderChrome('home');
+hydrateIcons();
+
+document.getElementById('market-asof').textContent = `${AS_OF} 收盤`;
+document.getElementById('summary-asof').textContent = `依 ${AS_OF} 收盤價計算`;
+document.getElementById('limitup-updated').textContent = `由 Claude 每日收盤後整理 · 更新時間 ${LIMIT_UP_UPDATED}`;
+
+const indexCard = (label, m) => `
+  <div class="card index-card">
+    <div class="index-card__body">
+      <div class="index-card__label">${label}</div>
+      <div class="index-card__value is-${dirOf(m.change)}">${f2(m.value)}</div>
+      ${changeText({ value: m.change, percent: m.percent, decimals: 2, size: 16 })}
+    </div>
+    ${sparkline(m.trend, { width: 140, height: 56, baseline: m.prev })}
+  </div>`;
+document.getElementById('market').innerHTML = indexCard('加權指數', MARKET.taiex) + indexCard('櫃買指數', MARKET.otc);
+
+// Summary is computed from the holdings saved by 我的持股 (holdings.html).
+function renderSummary() {
+  const t = valueHoldings(loadHoldings().list).totals;
+  const pnlDir = dirOf(t.pnl), todayDir = dirOf(t.today);
+  document.getElementById('summary').innerHTML = `
+    <div class="grid grid--pair">
+      ${statCard({ label: '總市值', iconName: 'wallet', unit: 'NT$', value: f0(t.mv), hint: `持股 ${t.count} 檔` })}
+      ${statCard({ label: '今日損益', iconName: 'activity', value: signed(t.today, f0(Math.abs(t.today))), dir: todayDir, colorValue: true, percent: t.todayPct })}
+    </div>
+    <div class="grid grid--pair">
+      ${statCard({ label: '總損益', iconName: 'coins', value: signed(t.pnl, f0(Math.abs(t.pnl))), dir: pnlDir, colorValue: true, hint: '未實現損益' })}
+      ${statCard({ label: '總報酬率', iconName: 'trending-up', value: signed(t.ret, f2(Math.abs(t.ret)) + '%'), dir: pnlDir, colorValue: true, hint: `總成本 NT$ ${f0(t.cost)}` })}
+    </div>`;
+}
+renderSummary();
+// Stay in sync when holdings change in another tab, or when returning via the back button.
+window.addEventListener('storage', e => { if (e.key === HOLDINGS_KEY) renderSummary(); });
+window.addEventListener('pageshow', e => { if (e.persisted) renderSummary(); });
+
+document.getElementById('see-all').innerHTML = `看全部 ${LIMIT_UPS.length} 檔<span class="see-all__chev">›</span>`;
+document.getElementById('limitups').innerHTML = LIMIT_UPS.map(s => `
+  <a class="card mini" href="limit-up.html#s${s.code}">
+    <div class="mini__head">
+      <div class="mini__id"><span class="mini__code">${s.code}</span><span class="mini__name">${esc(s.name)}</span></div>
+      <span class="tag-limit">漲停</span>
+    </div>
+    <div class="mini__price"><span class="mini__close">${f2(s.price)}</span><span class="mini__pct">▲ ${f2(s.pct)}%</span></div>
+    <p class="mini__reason">${esc(s.short)}</p>
+  </a>`).join('');
+</script>
+</body>
+</html>

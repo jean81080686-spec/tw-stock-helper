@@ -1,0 +1,121 @@
+/* Design tokens — copied from the Stock Dashboard design system (project/_ds/…/tokens). */
+/* ---- fonts.css ---- */
+/* Google Fonts substitutes — no brand font files were provided */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+/* ---- colors.css ---- */
+:root{
+/* Sea — primary (turquoise shallows) */
+--sea-50:#E8F8F6;--sea-100:#C9EFEB;--sea-200:#9BE2DA;--sea-300:#62CFC4;--sea-400:#2FBBAE;--sea-500:#14A396;--sea-600:#0B877C;--sea-700:#086C64;--sea-800:#08534D;--sea-900:#073F3B;
+/* Sand — warm neutrals */
+--sand-0:#FFFFFF;--sand-25:#FCFBF8;--sand-50:#FAF8F4;--sand-100:#F3EFE7;--sand-200:#E8E2D6;--sand-300:#D6CEBF;--sand-400:#B0A799;--sand-500:#857D71;--sand-600:#635C53;--sand-700:#48433C;--sand-800:#2F2B27;--sand-900:#1C1A17;
+/* Shade — palm-shadow lavender (secondary) */
+--shade-50:#F1F2F8;--shade-100:#E1E3F0;--shade-200:#C6C9E1;--shade-300:#A6AACD;--shade-400:#8A8FBA;--shade-500:#6F74A3;--shade-600:#575C88;--shade-700:#43476B;
+/* Terracotta — roofs; = 上漲 (TW convention: red up) */
+--terra-50:#FCEEE8;--terra-100:#F8D9CC;--terra-300:#EC9A7A;--terra-500:#D9542B;--terra-600:#C2461F;--terra-700:#9C3818;
+/* Palm — fronds; = 下跌 (TW convention: green down) */
+--palm-50:#E9F4EA;--palm-100:#CDE6D0;--palm-300:#7DBA86;--palm-500:#3E9147;--palm-600:#2F7D3B;--palm-700:#23602D;
+/* Sun — jet-ski yellow; warnings */
+--sun-50:#FEF6E4;--sun-100:#FCE8B8;--sun-400:#F2B53A;--sun-500:#E09A12;--sun-700:#8F5F05;
+/* Coral — beach umbrella pink; data-viz only */
+--coral-300:#F4A3B4;--coral-500:#E66B86;
+
+/* Semantic */
+--bg-app:var(--sand-50);
+--surface-card:var(--sand-0);
+--surface-sunken:var(--sand-100);
+--surface-hover:var(--sand-100);
+--surface-selected:var(--sea-50);
+--surface-inverse:var(--sand-900);
+--text-primary:var(--sand-900);
+--text-secondary:var(--sand-600);
+--text-tertiary:var(--sand-500);
+--text-disabled:var(--sand-400);
+--text-inverse:var(--sand-0);
+--text-link:var(--sea-700);
+--border-subtle:var(--sand-200);
+--border-default:var(--sand-300);
+--border-strong:var(--sand-500);
+--border-focus:var(--sea-500);
+--accent:var(--sea-600);
+--accent-hover:var(--sea-700);
+--accent-press:var(--sea-800);
+--accent-soft:var(--sea-50);
+--accent-on:var(--sand-0);
+--secondary:var(--shade-500);
+--secondary-soft:var(--shade-50);
+
+/* Market (台股慣例：紅漲綠跌) */
+--market-up:var(--terra-600);
+--market-up-soft:var(--terra-50);
+--market-down:var(--palm-600);
+--market-down-soft:var(--palm-50);
+--market-flat:var(--sand-500);
+--market-flat-soft:var(--sand-100);
+
+/* Status */
+--status-success:var(--sea-600);--status-success-soft:var(--sea-50);
+--status-warning:var(--sun-700);--status-warning-soft:var(--sun-50);
+--status-danger:var(--terra-700);--status-danger-soft:var(--terra-50);
+--status-info:var(--shade-600);--status-info-soft:var(--shade-50);
+
+/* Data-viz categorical, in order */
+--viz-1:var(--sea-500);--viz-2:var(--shade-400);--viz-3:var(--sun-400);--viz-4:var(--coral-500);--viz-5:var(--sea-800);--viz-6:var(--sand-400);
+}
+
+/* ---- typography.css ---- */
+:root{
+--font-sans:"Manrope","Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+--font-cjk:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+--font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+--font-numeric:"Manrope","Noto Sans TC",sans-serif; /* always with tabular-nums */
+
+--fw-regular:400;/* @kind other */--fw-medium:500;/* @kind other */--fw-semibold:600;/* @kind other */--fw-bold:700;/* @kind other */--fw-heavy:800;/* @kind other */
+
+--fs-11:11px;--fs-12:12px;--fs-13:13px;--fs-14:14px;--fs-16:16px;--fs-18:18px;--fs-20:20px;--fs-24:24px;--fs-30:30px;--fs-40:40px;--fs-56:56px;
+--lh-tight:1.15;/* @kind other */--lh-snug:1.3;/* @kind other */--lh-normal:1.5;/* @kind other */--lh-relaxed:1.65;/* @kind other */
+--ls-tight:-0.02em;/* @kind other */--ls-normal:0;/* @kind other */--ls-wide:0.06em;/* @kind other */
+
+/* Semantic roles */
+--type-display-size:var(--fs-40);--type-display-weight:800;/* @kind other */--type-display-lh:var(--lh-tight);/* @kind other */
+--type-h1-size:var(--fs-24);--type-h1-weight:700;/* @kind other */
+--type-h2-size:var(--fs-18);--type-h2-weight:700;/* @kind other */
+--type-h3-size:var(--fs-16);--type-h3-weight:600;/* @kind other */
+--type-body-size:var(--fs-14);--type-body-weight:400;/* @kind other */
+--type-small-size:var(--fs-13);
+--type-caption-size:var(--fs-12);
+--type-overline-size:var(--fs-11);
+--type-kpi-size:var(--fs-30);--type-kpi-weight:700;/* @kind other */
+}
+
+/* ---- spacing.css ---- */
+:root{
+--space-0:0;--space-1:2px;--space-2:4px;--space-3:6px;--space-4:8px;--space-5:12px;--space-6:16px;--space-7:20px;--space-8:24px;--space-9:32px;--space-10:40px;--space-11:56px;--space-12:72px;
+--radius-xs:4px;--radius-sm:6px;--radius-md:10px;--radius-lg:14px;--radius-xl:20px;--radius-full:999px;
+--control-h-sm:28px;--control-h-md:36px;--control-h-lg:44px;
+--sidebar-w:232px;--topbar-h:60px;--content-max:1360px;
+--card-pad:20px;--gutter:16px;
+}
+
+/* ---- effects.css ---- */
+:root{
+--shadow-xs:0 1px 2px rgba(60,45,20,.06);
+--shadow-sm:0 1px 2px rgba(60,45,20,.05),0 2px 8px rgba(60,45,20,.05);
+--shadow-md:0 2px 4px rgba(60,45,20,.05),0 10px 28px rgba(60,45,20,.09);
+--shadow-lg:0 4px 8px rgba(60,45,20,.06),0 24px 56px rgba(60,45,20,.14);
+--ring-focus:0 0 0 3px rgba(20,163,150,.28);
+--overlay-scrim:rgba(28,26,23,.36);
+--blur-glass:saturate(1.4) blur(14px);/* @kind other */
+--surface-glass:rgba(255,255,255,.72);
+--ease-out:cubic-bezier(.22,.8,.3,1);/* @kind other */--ease-in-out:cubic-bezier(.65,0,.35,1);/* @kind other */
+--dur-fast:120ms;/* @kind other */--dur-base:180ms;/* @kind other */--dur-slow:280ms;/* @kind other */
+}
+
+/* ---- base.css ---- */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font-sans);font-size:var(--type-body-size);line-height:var(--lh-normal);color:var(--text-primary);background:var(--bg-app);-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}a:hover{color:var(--sea-800);text-decoration:underline}
+.num,.tnum{font-variant-numeric:tabular-nums lining-nums}
+:focus-visible{outline:none;box-shadow:var(--ring-focus)}
+
