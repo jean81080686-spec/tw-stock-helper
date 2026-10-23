@@ -70,7 +70,7 @@
 <script>
 renderChrome('holdings');
 hydrateIcons();
-document.getElementById('asof').textContent = `現價為 ${AS_OF} 收盤價（${AS_OF_NOTE}）`;
+document.getElementById('asof').textContent = `現價為 ${AS_OF} 收盤價${AS_OF_NOTE ? `（${AS_OF_NOTE}）` : ''}`;
 
 let state = loadHoldings();
 const form = document.getElementById('add-form');

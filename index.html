@@ -52,7 +52,7 @@
 renderChrome('home');
 hydrateIcons();
 
-document.getElementById('market-asof').textContent = `${AS_OF} 收盤（${AS_OF_NOTE}）`;
+document.getElementById('market-asof').textContent = `${AS_OF} 收盤${AS_OF_NOTE ? `（${AS_OF_NOTE}）` : ''}`;
 document.getElementById('summary-asof').textContent = `依 ${AS_OF} 收盤價計算`;
 document.getElementById('limitup-updated').textContent = `由 Claude 每日收盤後整理 · 更新時間 ${LIMIT_UP_UPDATED}`;
 

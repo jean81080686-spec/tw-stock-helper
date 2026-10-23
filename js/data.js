@@ -3,6 +3,7 @@
 // so 10/22 is the latest trading day. Update this file after each close.
 
 const AS_OF = '2026/10/22';
+// Optional note shown after the date (e.g. a market holiday); '' shows nothing.
 const AS_OF_NOTE = '10/23 颱風休市';
 const LIMIT_UP_UPDATED = '2026/10/22 14:57';
 
