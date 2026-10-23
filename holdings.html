@@ -70,7 +70,7 @@
 <script>
 renderChrome('holdings');
 hydrateIcons();
-document.getElementById('asof').textContent = `現價為 ${AS_OF} 收盤價`;
+document.getElementById('asof').textContent = `現價為 ${AS_OF} 收盤價（${AS_OF_NOTE}）`;
 
 let state = loadHoldings();
 const form = document.getElementById('add-form');
@@ -94,7 +94,7 @@ function render() {
       <td class="c-name">${esc(r.name)}</td>
       <td class="r">${f0(r.shares)}</td>
       <td class="r c-muted">${f2(r.cost)}</td>
-      <td class="r">${f2(r.price)}</td>
+      <td class="r">${r.priceDate ? `<span class="c-asof" title="查無 ${AS_OF} 收盤價，顯示 ${r.priceDate} 收盤價">${r.priceDate.slice(5)}</span>` : ''}${f2(r.price)}</td>
       <td class="r c-strong">${f0(r.mv)}</td>
       <td class="r">${changeText({ value: Math.round(r.pnl) })}</td>
       <td class="r">${changeText({ percent: r.ret, arrow: false })}</td>

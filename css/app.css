@@ -1,6 +1,6 @@
 /* 台股投資小幫手 — page layout and component styles.
    Mirrors the Stock Dashboard design-system components (Button, Input, StatCard,
-   ChangeText, Badge, SegmentedControl, Sparkline) used in the Claude Design mockups. */
+   ChangeText, Badge, SegmentedControl) used in the Claude Design mockups. */
 
 body { margin: 0; background: var(--bg-app); color: var(--text-primary); font-family: var(--font-sans); }
 a { color: var(--text-link); text-decoration: none; }
@@ -69,8 +69,9 @@ a:hover { color: var(--sea-800); }
 .grid--summary { grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); }
 .grid--pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid--stats3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
-.grid--minis { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
-.grid--limitup { grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+/* auto-fill keeps card widths stable when there are only one or two limit-up stocks. */
+.grid--minis { grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
+.grid--limitup { grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); }
 .grid--form { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px; align-items: end; }
 
 /* ---------- Button ---------- */
@@ -157,7 +158,6 @@ a:hover { color: var(--sea-800); }
 .index-card__body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .index-card__label { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
 .index-card__value { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.sparkline { display: block; overflow: visible; }
 
 /* ---------- 首頁：漲停小卡 ---------- */
 .mini {
@@ -216,5 +216,6 @@ a:hover { color: var(--sea-800); }
 .table .c-name { font-weight: 600; }
 .table .c-muted { color: var(--text-secondary); }
 .table .c-strong { font-weight: 600; }
+.table .c-asof { margin-right: 6px; font-size: 11px; color: var(--text-tertiary); }
 .table td.c-action { padding: 6px 8px; text-align: right; }
 .table-empty { padding: 32px 12px; text-align: center; font-size: 14px; color: var(--text-tertiary); }

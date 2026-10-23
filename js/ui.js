@@ -1,5 +1,5 @@
 // Shared rendering helpers: formatting, icons, site chrome and the design-system components
-// (StatCard, ChangeText, Sparkline) as HTML-string builders.
+// (StatCard, ChangeText) as HTML-string builders.
 
 const f0 = n => Math.round(n).toLocaleString('en-US');
 const f2 = n => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -53,7 +53,7 @@ function renderChrome(active) {
   document.getElementById('about').innerHTML = `
     <div class="footer__inner">
       <span>本站資料僅供參考，非投資建議。投資前請自行判斷並承擔風險。</span>
-      <span>台股投資小幫手 · 範例資料</span>
+      <span>台股投資小幫手 · 收盤資料人工更新</span>
     </div>`;
 }
 
@@ -79,22 +79,4 @@ function statCard({ label, iconName, unit, value, hint, dir = 'flat', colorValue
         ${hint ? `<div class="stat__hint">${esc(hint)}</div>` : ''}
       </div>
     </div>`;
-}
-
-// Mini price line coloured red/green against the reference (prev close), with a dashed baseline.
-let sparkSeq = 0;
-function sparkline(data, { width = 120, height = 36, baseline } = {}) {
-  if (data.length < 2) return '';
-  const min = Math.min(...data), max = Math.max(...data), r = max - min || 1, p = 2;
-  const xs = i => p + i * (width - 2 * p) / (data.length - 1);
-  const ys = v => p + (height - 2 * p) * (1 - (v - min) / r);
-  const d = data.map((v, i) => (i ? 'L' : 'M') + xs(i).toFixed(1) + ' ' + ys(v).toFixed(1)).join(' ');
-  const c = `var(--market-${data[data.length - 1] >= (baseline ?? data[0]) ? 'up' : 'down'})`;
-  const id = 'sg' + (++sparkSeq);
-  return `<svg class="sparkline" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" aria-hidden="true">
-    <defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".18"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
-    <path d="${d} L${xs(data.length - 1)} ${height} L${xs(0)} ${height} Z" fill="url(#${id})"/>
-    ${baseline != null ? `<line x1="0" x2="${width}" y1="${ys(baseline)}" y2="${ys(baseline)}" stroke="var(--border-default)" stroke-dasharray="2 3"/>` : ''}
-    <path d="${d}" fill="none" stroke="${c}" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round"/>
-  </svg>`;
 }

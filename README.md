@@ -15,9 +15,9 @@ python3 -m http.server 8000   # http://localhost:8000
 
 - `css/tokens.css`: design tokens, copied verbatim from the Stock Dashboard design system.
 - `css/app.css`: layout and component styles (Button, Input, StatCard, ChangeText, Badge, SegmentedControl).
-- `js/data.js`: sample quotes, market and 漲停 data, and the holdings store.
+- `js/data.js`: closing prices, index levels and 漲停 data (entered by hand after each close), and the holdings store.
 - `js/ui.js`: formatters, inline Lucide icons, the shared header and footer, and component builders.
 
 Holdings are saved in `localStorage` under `twhelper.holdings.v1`. The first visit starts from 5 sample holdings.
 The 我的持股摘要 section on the homepage is calculated from the same data.
-All prices are sample data as of 2026/10/23. Only the codes listed in `QUOTES` are recognised.
+Prices are the 2026/10/22 close (10/23 was a typhoon market holiday). Only the codes listed in `QUOTES` are recognised.
