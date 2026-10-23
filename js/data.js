@@ -39,13 +39,22 @@ const LIMIT_UPS = [
 // ---------- Holdings store (localStorage) ----------
 
 const HOLDINGS_KEY = 'twhelper.holdings.v1';
+// Costs sit near recent prices so the sample shows a realistic mix of gains and losses.
 const SAMPLE_HOLDINGS = [
-  { id: 1, code: '2330', shares: 1000, cost: 820 },
-  { id: 2, code: '2317', shares: 2000, cost: 168.5 },
-  { id: 3, code: '2454', shares: 200, cost: 1320 },
-  { id: 4, code: '0050', shares: 3000, cost: 168.2 },
-  { id: 5, code: '2882', shares: 5000, cost: 64.8 }
+  { id: 1, code: '2330', shares: 1000, cost: 1980 },
+  { id: 2, code: '2317', shares: 2000, cost: 228 },
+  { id: 3, code: '2454', shares: 200, cost: 4280 },
+  { id: 4, code: '0050', shares: 3000, cost: 98.5 },
+  { id: 5, code: '2882', shares: 5000, cost: 118.2 }
 ];
+// Costs of the first sample set; saved sample rows still at these costs are moved to the new ones.
+const OLD_SAMPLE_COSTS = { 1: ['2330', 820], 2: ['2317', 168.5], 3: ['2454', 1320], 4: ['0050', 168.2], 5: ['2882', 64.8] };
+
+function migrateSampleCost(h) {
+  const old = OLD_SAMPLE_COSTS[h.id];
+  if (!old || old[0] !== h.code || old[1] !== h.cost) return h;
+  return { ...h, cost: SAMPLE_HOLDINGS.find(s => s.id === h.id).cost };
+}
 
 // Returns { list, nextId }. Falls back to the sample holdings when nothing is stored
 // or storage is unavailable (private mode, blocked site data).
@@ -54,7 +63,7 @@ function loadHoldings() {
     const raw = localStorage.getItem(HOLDINGS_KEY);
     if (raw) {
       const saved = JSON.parse(raw);
-      const list = (saved.list || []).filter(h => QUOTES[h.code] && h.shares > 0 && h.cost > 0);
+      const list = (saved.list || []).filter(h => QUOTES[h.code] && h.shares > 0 && h.cost > 0).map(migrateSampleCost);
       const nextId = Math.max(saved.nextId || 1, ...list.map(h => h.id + 1));
       return { list, nextId };
     }
