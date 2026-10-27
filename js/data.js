@@ -1,26 +1,25 @@
 // Market data and the holdings store shared by all three pages.
-// Prices are the 2026/10/22 close, entered by hand: 10/23 was a typhoon (薔琵) market holiday,
-// so 10/22 is the latest trading day. Update this file after each close.
+// Prices are the 2026/10/27 close, entered by hand. Update this file after each close.
 
-const AS_OF = '2026/10/22';
+const AS_OF = '2026/10/27';
 // Optional note shown after the date (e.g. a market holiday); '' shows nothing.
-const AS_OF_NOTE = '10/23 颱風休市';
-const LIMIT_UP_UPDATED = '2026/10/22 14:57';
+const AS_OF_NOTE = '';
+const LIMIT_UP_UPDATED = '2026/10/27 14:58';
 
 // code -> [name, close, previous close, as-of date if older than AS_OF]
-// 0056 went ex-dividend on 10/22; its previous close is the ex-dividend reference price.
-// 6278 and 4720: no verified 10/22 close was found, so they show the 10/21 close with no change.
+// Stocks with a date in the 4th slot had no verified 10/27 close, so they keep that older close with no change.
 const QUOTES = {
-  '2330': ['台積電', 2385, 2420], '2317': ['鴻海', 245, 250], '2454': ['聯發科', 4010, 4140],
-  '0050': ['元大台灣50', 106.9, 108.15], '2882': ['國泰金', 113.5, 114], '2881': ['富邦金', 158.5, 158.5],
-  '2412': ['中華電', 158, 154], '2308': ['台達電', 1560, 1625], '3406': ['玉晶光', 1160, 1140],
-  '6213': ['聯茂', 777, 823], '6278': ['台表科', 316.5, 316.5, '2026/10/21'], '2492': ['華新科', 368, 405.5],
-  '4720': ['德淵', 29.25, 29.25, '2026/10/21'], '0056': ['元大高股息', 56.3, 57.05], '2468': ['華經', 55, 50]
+  '2330': ['台積電', 2400, 2385], '2317': ['鴻海', 247.5, 245], '2454': ['聯發科', 3960, 4010],
+  '0050': ['元大台灣50', 106.6, 106.9], '2882': ['國泰金', 113.5, 113.5, '2026/10/22'], '2881': ['富邦金', 162, 158.5],
+  '2412': ['中華電', 158, 158, '2026/10/22'], '2308': ['台達電', 1510, 1560], '3406': ['玉晶光', 1160, 1160, '2026/10/22'],
+  '6213': ['聯茂', 777, 777, '2026/10/22'], '6278': ['台表科', 316.5, 316.5, '2026/10/21'], '2492': ['華新科', 368, 368, '2026/10/22'],
+  '4720': ['德淵', 29.25, 29.25, '2026/10/21'], '0056': ['元大高股息', 56.3, 56.3, '2026/10/22'], '2468': ['華經', 55, 55, '2026/10/22'],
+  '4526': ['東台', 45.15, 41.05]
 };
 
 const MARKET = {
-  taiex: { value: 46041.43, change: -846.34, percent: -1.81 },
-  otc: { value: 381.69, change: -13.73, percent: -3.47 }
+  taiex: { value: 46096.23, change: 54.80, percent: 0.12 },
+  otc: { value: 379.20, change: -2.49, percent: -0.65 }
 };
 
 const LIMIT_UP_CATS = [
@@ -29,12 +28,12 @@ const LIMIT_UP_CATS = [
   { key: 'infer', label: '查不到新聞屬推論', tone: 'warning' }
 ];
 
-// From the 「20261022 漲停股新聞摘要」 email. `short` is the one-line reason on the homepage;
+// From the 「20261027 漲停股新聞摘要」 email. `short` is the one-line reason on the homepage;
 // `reason` is the full text on 今日漲停股.
 const LIMIT_UPS = [
-  { code: '2468', name: '華經', price: 55, change: 5, pct: 10.00, cat: 'infer',
-    short: 'AI 資安族群題材帶動，公司本身無新消息，屬推論。',
-    reason: '創一年新高，9 個交易日漲逾 35%。當天新聞都是族群綜述：PHP 爆出由 AI 發現的重大漏洞「PHP2Shell」，多國網站緊急下架修補，資安與系統整合股（驊宏資、晉泰、東捷資訊、大世科）集體漲停，華經名列其中。基本面支撐是 9 月營收 3.08 億元、年增 68.8%，創 3 年多新高（公司 10/16 指出來自大型專案驗收），但前三季累計仍年減 4%；10/17–10/22 期間查無高層發言，也沒有新產品、新訂單。' }
+  { code: '4526', name: '東台', price: 45.15, change: 4.10, pct: 9.99, cat: 'news',
+    short: 'PCB鑽孔機訂單看到2027年底，9月營收年增81%',
+    reason: '公司自己說 PCB 鑽孔機訂單能見度「直達 2027 年底」，產能滿載、正在擴產；9 月營收 7.07 億元，年增 81%，創 36 個月新高。10/26 東京工具機展開幕，董事長嚴瑞雄說集團要跟著台積電去熊本搶日本半導體商機。今天和上銀等工具機股一起漲停，外資連 2 日買進約 1.1 萬張（成值、成量兩榜都有）。' }
 ];
 
 // ---------- Holdings store (localStorage) ----------
